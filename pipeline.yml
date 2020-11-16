@@ -1,0 +1,34 @@
+resources:
+  - name: repo-list-files
+    type: git
+    icon: github
+    source:
+      uri: https://github.com/tjisse/list-files.git
+      branch: master
+    webhook_token: ((build_git-webhook-token))
+  - name: repo-docker-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: tjisse/list-files
+      username: ((build_dockerhub-username))
+      password: ((build_dockerhub-token))
+jobs:
+  - name: test-and-build
+    public: true
+    plan:
+      - get: repo-list-files
+        trigger: true
+      - task: test
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: clojure
+              tag: 'openjdk-11-tools-deps'
+          run:
+            path: clojure
+            args:
+              - '-M:test-runner'
+      - put: repo-docker-image

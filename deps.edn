@@ -1,0 +1,35 @@
+{:paths ["src" "resources"],
+ :deps
+ {org.clojure/clojure {:mvn/version "1.10.2-alpha4"},
+  http-kit/http-kit {:mvn/version "2.5.0"},
+  mount/mount {:mvn/version "0.1.16"},
+  environ/environ {:mvn/version "1.2.0"},
+  metosin/muuntaja {:mvn/version "0.6.7"},
+  metosin/compojure-api {:mvn/version "2.0.0-alpha31"}},
+ :aliases
+ {:native-image
+  {:main-opts
+   ["-m clj.native-image list-files.main"
+    "--initialize-at-build-time"
+    "--no-fallback"
+    "--report-unsupported-elements-at-runtime"
+    "--static --libc=musl"
+    "-H:Name=list-files"],
+   :jvm-opts ["-Dclojure.compiler.direct-linking=true"],
+   :extra-deps
+   {clj.native-image/clj.native-image
+    {:git/url "https://github.com/taylorwood/clj.native-image.git",
+     :sha "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}},
+  :test
+  {:extra-paths ["test"],
+   :extra-deps {org.clojure/test.check {:mvn/version "1.0.0"}}},
+  :runner
+  {:extra-deps
+   {com.cognitect/test-runner
+    {:git/url "https://github.com/cognitect-labs/test-runner",
+     :sha "b6b3193fcc42659d7e46ecd1884a228993441182"}},
+   :main-opts ["-m" "cognitect.test-runner" "-d" "test"]},
+  :uberjar
+  {:extra-deps {seancorfield/depstar {:mvn/version "1.1.128"}},
+   :main-opts
+   ["-m" "hf.depstar.uberjar" "main.jar" "-C" "-m" "list-files.main"]}}}

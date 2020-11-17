@@ -27,8 +27,15 @@ jobs:
             source:
               repository: clojure
               tag: 'openjdk-11-tools-deps'
+          inputs:
+            - name: repo-list-files
           run:
-            path: clojure
+            path: /bin/sh
             args:
-              - '-M:test-runner'
+              - -c
+              - |
+                cd repo-list-files
+                clojure -M:test:runner
       - put: repo-docker-image
+        params:
+          build: repo-list-files

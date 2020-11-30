@@ -35,3 +35,4 @@ FROM scratch
 COPY --from=builder /app/list-files /list-files
 
 ENTRYPOINT ["/list-files"]
+EXPOSE 8080/tcp
